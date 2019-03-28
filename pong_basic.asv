@@ -21,7 +21,7 @@ global WALL_X_MIN WALL_X_MAX WALL_Y_MIN WALL_Y_MAX
 global PADDLE_WIDTH BALL_SIZE 
 global BALL_INIT_VX BALL_INIT_VY DT DELAY
 global PADDLE_VX PADDLE_SPEED PADDLE_VY
-global game_over level flag
+global game_over level
 global chimp_x chimp_y
 global chimp_x_min chimp_x_max chimp_y_min chimp_y_max
 
@@ -40,13 +40,10 @@ PADDLE_VY = 0;
 PADDLE_SPEED = 10; 
 DT = 0.1; 
 DELAY = 0.001;
-flag = 0;
 chimp_x = [50 60];
 chimp_y = [50 60];
-chimp_x_min = chimp_x(1);
-chimp_y_min = chimp_y(1);
-chimp_x_max = chimp_x(1)+10;
-chimp_y_max = chimp_y(1)+10;
+[chimp_x_min,chimp_y_min] = [chimp_x(1),chimp_y(1)];
+[chimp_x_min,chimp_y_min] = [chimp_x(1),chimp_y(1)];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function initFigure %second function, initialize the figure
@@ -57,7 +54,7 @@ global BALL_INIT_VX BALL_INIT_VY
 global ball_x ball_y ball_vx ball_vy 
 global paddle_x_left paddle_x_right paddle_y
 global ball_anim paddle_anim
-global level chimp_x chimp_y I J
+global level chimp_x chimp_y
 
 fig = figure; %initialize the figure
 set(fig, 'Resize', 'off'); %do not allow figure to resize
@@ -81,7 +78,7 @@ paddle_anim = line('Xdata',[paddle_x_left paddle_x_right],'Ydata',[paddle_y padd
 
 I = imread('daChimp.jpg');
 hold on
-J = image([10 -10]+chimp_x(1), [10 -10]+chimp_y(1), I);
+image([10 -10]+chimp_x(1), [10 -10]+chimp_y(1), I);
 
 %%%%%%%% set the walls %%%%%%%
 line('Xdata',[WALL_X_MIN WALL_X_MIN],'Ydata',[WALL_Y_MIN WALL_Y_MAX],'Color','k','Linewidth',3); %left wall
@@ -95,8 +92,7 @@ function moveBall %third function, compute ball movement including collision det
 global ball_x ball_y ball_vx ball_vy  DT ex ey
 global WALL_X_MIN WALL_X_MAX WALL_Y_MIN WALL_Y_MAX
 global paddle_x_left paddle_x_right paddle_y
-global game_over flag
-global chimp_x_min chimp_x_max chimp_y_min chimp_y_max
+global game_over level
 
 ball_x = ball_x + ball_vx*DT;
 ball_y = ball_y + ball_vy*DT;
@@ -117,7 +113,7 @@ else
 end
 
 if (flag == 0)
-    if (ball_x > 40 && ball_x < 60 && ball_y > 40 && ball_y < 60)
+    if (ball_x >= chimp_x_min && ball_x <= chimp_x_max && ball_y >= chimp_y_max && ball_y <= chimp_y_min)
         ball_vx = -1.1*ball_vx;
         ball_vy = -1.1*ball_vy;
         flag = 1;
@@ -166,13 +162,7 @@ function refreshPlot %fifth function, refresh plot based on moveBall and movePad
 global ball_x ball_y
 global ball_anim paddle_anim
 global paddle_x_left paddle_x_right paddle_y
-global DELAY flag I J chimp_x chimp_y
-
-if (flag == 1)
-    hold off
-    J = image([10 -10]+chimp_x(2),[10 -10]+chimp_y(2),I);
-    hold on
-end
+global DELAY
 
 set(ball_anim, 'XData', ball_x, 'YData', ball_y);
 set(paddle_anim, 'Xdata',[paddle_x_left paddle_x_right], 'YData', [paddle_y paddle_y]);
