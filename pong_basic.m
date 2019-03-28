@@ -131,6 +131,10 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if (ball_y < WALL_Y_MIN)
+     GameOver = imread('GameOver.png');
+     hold on;
+     image([-45 10]+70, [45 10]+50, GameOver);
+     pause(1);
      game_over = 1;
 end
 
