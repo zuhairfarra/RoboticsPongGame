@@ -57,7 +57,7 @@ global BALL_INIT_VX BALL_INIT_VY
 global ball_x ball_y ball_vx ball_vy 
 global paddle_x_left paddle_x_right paddle_y
 global ball_anim paddle_anim
-global level chimp_x chimp_y I J
+global level I
 
 fig = figure; %initialize the figure
 set(fig, 'Resize', 'off'); %do not allow figure to resize
@@ -80,8 +80,6 @@ ball_anim = plot(ball_x,ball_y,'o','Markersize',BALL_SIZE,'Markerfacecolor','r',
 paddle_anim = line('Xdata',[paddle_x_left paddle_x_right],'Ydata',[paddle_y paddle_y],'Color','g','Linewidth',5); %paddle
 
 I = imread('daChimp.jpg');
-hold on
-J = image([10 -10]+chimp_x(1), [10 -10]+chimp_y(1), I);
 
 %%%%%%%% set the walls %%%%%%%
 line('Xdata',[WALL_X_MIN WALL_X_MIN],'Ydata',[WALL_Y_MIN WALL_Y_MAX],'Color','k','Linewidth',3); %left wall
@@ -168,10 +166,13 @@ global ball_anim paddle_anim
 global paddle_x_left paddle_x_right paddle_y
 global DELAY flag I J chimp_x chimp_y
 
-if (flag == 1)
-    hold off
-    J = image([10 -10]+chimp_x(2),[10 -10]+chimp_y(2),I);
+if (flag == 0)
     hold on
+    J = image([10 -10]+chimp_x(1), [10 -10]+chimp_y(1), I);
+% elseif (flag == 1)
+%     hold off
+%     J = image([10 -10]+chimp_x(2),[10 -10]+chimp_y(2),I);
+%     hold on
 end
 
 set(ball_anim, 'XData', ball_x, 'YData', ball_y);
