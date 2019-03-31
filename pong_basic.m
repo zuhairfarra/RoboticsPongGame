@@ -22,7 +22,7 @@ global PADDLE_WIDTH BALL_SIZE
 global BALL_INIT_VX BALL_INIT_VY DT DELAY
 global PADDLE_VX PADDLE_SPEED PADDLE_VY
 global game_over level flag
-global chimp_x chimp_y
+global chimp_x chimp_y counter
 global chimp_x_min chimp_x_max chimp_y_min chimp_y_max
 
 level = 0;
@@ -47,6 +47,7 @@ chimp_x_min = chimp_x(1);
 chimp_y_min = chimp_y(1);
 chimp_x_max = chimp_x(1)+10;
 chimp_y_max = chimp_y(1)+10;
+counter = 0
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function initFigure %second function, initialize the figure
@@ -95,20 +96,23 @@ global WALL_X_MIN WALL_X_MAX WALL_Y_MIN WALL_Y_MAX
 global paddle_x_left paddle_x_right paddle_y
 global game_over flag
 global chimp_x_min chimp_x_max chimp_y_min chimp_y_max
+global counter
 
 ball_x = ball_x + ball_vx*DT;
 ball_y = ball_y + ball_vy*DT;
 
-ex = -1;
-ey = -1;
+ex = -1-counter;
+ey = -1-counter;
 
 if (ball_x < WALL_X_MIN || ball_x > WALL_X_MAX)
     disp('Ball collision detected');
     ball_vx = ball_vx*ex;
+    counter = counter + 0.1;
     
 elseif (ball_y > WALL_Y_MAX || (ball_y < paddle_y && paddle_x_left<ball_x && ball_x<paddle_x_right))
     disp('Ball collision detected');
     ball_vy = ball_vy*ey;
+    counter = counter + 0.1;
     
 else
     disp(['Ball Position is ',num2str(ball_x)]);
