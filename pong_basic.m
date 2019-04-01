@@ -77,7 +77,7 @@ paddle_y = 10;
 axis([WALL_X_MIN WALL_X_MAX WALL_Y_MIN WALL_Y_MAX]); %set the size of the board.
 axis manual;
 hold on;
-title(['press keys <left/right> to move the paddle; level = ',num2str(level)],'Fontsize',14);
+title(['press keys <left/right> to move the paddle; Level = ',num2str(level)],'Fontsize',14);
 set(gca, 'color', 'w', 'YTick', [], 'XTick', []); %remove x and y label
 
 %%%%%%% set the ball and paddle %%%%%%
@@ -100,7 +100,7 @@ global WALL_X_MIN WALL_X_MAX WALL_Y_MIN WALL_Y_MAX
 global paddle_x_left paddle_x_right paddle_y
 global game_over flag
 global chimp_x_min chimp_x_max chimp_y_min chimp_y_max
-global counter
+global counter 
 
 ball_x = ball_x + ball_vx*DT;
 ball_y = ball_y + ball_vy*DT;
@@ -127,7 +127,6 @@ elseif (ball_y > WALL_Y_MAX || (ball_y < paddle_y && paddle_x_left<ball_x && bal
     else
         ball_vy = -ball_vy;
     end
-    
 else
     disp(['Ball Position is ',num2str(ball_x)]);
 end
