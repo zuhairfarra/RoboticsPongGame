@@ -43,11 +43,11 @@ DELAY = 0.001;
 flag = 0;
 chimp_x = [50 60];
 chimp_y = [50 60];
-chimp_x_min = chimp_x(1);
-chimp_y_min = chimp_y(1);
+chimp_x_min = chimp_x(1)-10;
+chimp_y_min = chimp_y(1)-10;
 chimp_x_max = chimp_x(1)+10;
 chimp_y_max = chimp_y(1)+10;
-counter = 0
+counter = 0.1
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function initFigure %second function, initialize the figure
@@ -101,15 +101,17 @@ global counter
 ball_x = ball_x + ball_vx*DT;
 ball_y = ball_y + ball_vy*DT;
 
-ex = -1-counter;
-ey = -1-counter;
+if ex < 1.1
+    ex = -1-counter;
+    ey = -1-counter;
+end
 
-if (ball_x < WALL_X_MIN || ball_x > WALL_X_MAX)
+if ((ball_x < WALL_X_MIN || ball_x > WALL_X_MAX) && abs(ball_vx) < 30)
     disp('Ball collision detected');
     ball_vx = ball_vx*ex;
     counter = counter + 0.1;
     
-elseif (ball_y > WALL_Y_MAX || (ball_y < paddle_y && paddle_x_left<ball_x && ball_x<paddle_x_right))
+elseif ((ball_y > WALL_Y_MAX || (ball_y < paddle_y && paddle_x_left<ball_x && ball_x<paddle_x_right)) && abs(ball_vy) < 30)
     disp('Ball collision detected');
     ball_vy = ball_vy*ey;
     counter = counter + 0.1;
@@ -117,6 +119,9 @@ elseif (ball_y > WALL_Y_MAX || (ball_y < paddle_y && paddle_x_left<ball_x && bal
 else
     disp(['Ball Position is ',num2str(ball_x)]);
 end
+
+ball_vx
+ball_vy
 
 if (flag == 0)
     if (ball_x > 40 && ball_x < 60 && ball_y > 40 && ball_y < 60)
@@ -198,13 +203,13 @@ global paddle_x_left paddle_x_right paddle_y
 
 switch event.Key
   case 'rightarrow'
-    PADDLE_VX = 1.5*PADDLE_SPEED;
+    PADDLE_VX = 1.75*PADDLE_SPEED;
   case 'leftarrow'
-    PADDLE_VX = -1.5*PADDLE_SPEED;
+    PADDLE_VX = -1.75*PADDLE_SPEED;
   case 'uparrow'
-    PADDLE_VY = 1.5*PADDLE_SPEED;
+    PADDLE_VY = 1.75*PADDLE_SPEED;
   case 'downarrow'
-    PADDLE_VY = -1.5*PADDLE_SPEED;
+    PADDLE_VY = -1.75*PADDLE_SPEED;
   otherwise
     PADDLE_VX = 0;
     PADDLE_VY = 0;   
