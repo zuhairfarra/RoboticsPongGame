@@ -20,7 +20,7 @@ function initData %first function, initialize the data variables
 global WALL_X_MIN WALL_X_MAX WALL_Y_MIN WALL_Y_MAX
 global PADDLE_WIDTH BALL_SIZE 
 global BALL_INIT_VX BALL_INIT_VY DT DELAY
-global PADDLE_VX PADDLE_SPEED PADDLE_VY
+global PADDLE_VX PADDLE_SPEED PADDLE_VY padLFlag padRFlag padUFlag padDFlag
 global game_over level flag
 global chimp_x chimp_y counter
 global chimp_x_min chimp_x_max chimp_y_min chimp_y_max
@@ -37,7 +37,7 @@ BALL_INIT_VX = 4;
 BALL_INIT_VY = -2;
 PADDLE_VX = 0;
 PADDLE_VY = 0;
-PADDLE_SPEED = 10; 
+PADDLE_SPEED = 20; 
 DT = 0.1; 
 DELAY = 0.001;
 flag = 0;
@@ -47,7 +47,11 @@ chimp_x_min = chimp_x(1)-10;
 chimp_y_min = chimp_y(1)-10;
 chimp_x_max = chimp_x(1)+10;
 chimp_y_max = chimp_y(1)+10;
-counter = 0.1
+counter = 0.1;
+padLFlag = 0;
+padRFlag = 0;
+padUFlag = 0;
+padDFlag = 0;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function initFigure %second function, initialize the figure
@@ -101,20 +105,28 @@ global counter
 ball_x = ball_x + ball_vx*DT;
 ball_y = ball_y + ball_vy*DT;
 
-if ex < 1.1
+if ex < -1.1
     ex = -1-counter;
     ey = -1-counter;
 end
 
-if ((ball_x < WALL_X_MIN || ball_x > WALL_X_MAX) && abs(ball_vx) < 30)
+if (ball_x < WALL_X_MIN || ball_x > WALL_X_MAX)
     disp('Ball collision detected');
-    ball_vx = ball_vx*ex;
-    counter = counter + 0.1;
+    if(abs(ball_vx) < 25)
+        counter = counter + 0.15;
+        ball_vx = ball_vx*ex;
+    else
+        ball_vx = -ball_vx;
+    end
     
-elseif ((ball_y > WALL_Y_MAX || (ball_y < paddle_y && paddle_x_left<ball_x && ball_x<paddle_x_right)) && abs(ball_vy) < 30)
+elseif (ball_y > WALL_Y_MAX || (ball_y < paddle_y && paddle_x_left<ball_x && ball_x<paddle_x_right))
     disp('Ball collision detected');
-    ball_vy = ball_vy*ey;
-    counter = counter + 0.1;
+    if(abs(ball_vy) < 25)
+        counter = counter + 0.15;
+        ball_vy = ball_vy*ey;
+    else
+        ball_vy = -ball_vy;
+    end
     
 else
     disp(['Ball Position is ',num2str(ball_x)]);
@@ -152,17 +164,32 @@ global PADDLE_VX PADDLE_VY
 global PADDLE_WIDTH DT
 global paddle_x_left paddle_x_right paddle_y
 global WALL_X_MIN WALL_X_MAX
+global padLFlag padRFlag padUFlag padDFlag
 
-PADDLE_VX = 0;
-PADDLE_VY = 0;
+paddle_x_left = paddle_x_left + PADDLE_VX*DT;
+paddle_x_right = paddle_x_left + PADDLE_WIDTH;
 
-if (paddle_x_left == WALL_X_MIN || paddle_x_right == WALL_X_MAX)
+if (paddle_x_left == WALL_X_MIN)
     PADDLE_VX = 0;
     disp('Paddle collision detected');
+    padLFlag = 1;
+elseif (paddle_x_right == WALL_X_MAX)
+    PADDLE_VX = 0;
+    padRFlag = 1;
+else
+    padLFlag = 0
+    padRFlag = 0
 end
 
-if (paddle_y < 5 || paddle_y > 50)
+if (paddle_y < 5)
     PADDLE_VY = 0;
+    padDFlag = 1;
+elseif (paddle_y > 50)
+    PADDLE_VY = 0;
+    padUFlag = 1;
+else
+    padUFlag = 0
+    padDFlag = 0
 end
 
 %%%%%%%% Basic pong edit #2: %%%%%%%%%%%%
@@ -200,22 +227,30 @@ function keyDown(src,event) %called from initFigure to take key press to move th
 global PADDLE_VX PADDLE_SPEED PADDLE_VY
 global PADDLE_WIDTH DT
 global paddle_x_left paddle_x_right paddle_y
+global padRFlag padLFlag padDFlag padUFlag
 
 switch event.Key
   case 'rightarrow'
-    PADDLE_VX = 1.75*PADDLE_SPEED;
+      if padRFlag ~= 1
+        PADDLE_VX = PADDLE_SPEED;
+        PADDLE_VY = 0;
+      end
   case 'leftarrow'
-    PADDLE_VX = -1.75*PADDLE_SPEED;
+      if padLFlag ~= 1
+        PADDLE_VX = -PADDLE_SPEED;
+        PADDLE_VY = 0;
+      end
   case 'uparrow'
-    PADDLE_VY = 1.75*PADDLE_SPEED;
+      if padUFlag ~= 1
+        PADDLE_VY = 1.75*PADDLE_SPEED;
+      end
   case 'downarrow'
-    PADDLE_VY = -1.75*PADDLE_SPEED;
+      if padDFlag ~= 1
+        PADDLE_VY = -1.75*PADDLE_SPEED;
+      end
   otherwise
-    PADDLE_VX = 0;
     PADDLE_VY = 0;   
 end
 
-paddle_x_left = paddle_x_left + PADDLE_VX*DT;
-paddle_x_right = paddle_x_left + PADDLE_WIDTH;
 paddle_y = paddle_y + PADDLE_VY*DT;
 
